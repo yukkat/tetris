@@ -1,6 +1,7 @@
 /* options */
 var cageSize = 30;
 
+var cageSizepx = cageSize + 'px';
 var box = document.getElementById('box');
 var area = document.getElementById('area');
 
@@ -25,9 +26,10 @@ var areaCalculates = function () {
 	var cages = area.querySelectorAll('div');
 
 	for ( var item in cages ) {
-		cages.item(item).style.width = cageSize + 'px';
-		cages.item(item).style.height = cageSize + 'px';
+		var cage = cages.item(item);
+		cage.style.width = cageSizepx;
+		cage.style.height = cageSizepx;
+		cage.className = 'cage';
 	}
 }();
-
 
