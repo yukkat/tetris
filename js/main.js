@@ -1,6 +1,7 @@
 /* options */
-var cagesInWidth = 27;
+var cageSize = 30;
 
+var cageSizepx = cageSize + 'px';
 var box = document.getElementById('box');
 var area = document.getElementById('area');
 
@@ -8,13 +9,11 @@ var area = document.getElementById('area');
 var areaCalculates = function () {
 	var boxWidth = box.offsetWidth;
 	var boxHeight = box.offsetHeight;
-	var cageSize = parseInt(boxWidth / cagesInWidth);
-	var cageSizepx = cageSize + 'px';
+	var cagesInWidth = parseInt(boxWidth / cageSize);
 	var cagesInHeight = parseInt(boxHeight / cageSize);
 	area.style.width = cagesInWidth * cageSize + 'px';
-	var areaHeight = cagesInHeight * cageSize;
-	area.style.paddingTop = (
-	boxHeight - areaHeight) / 2 + 'px';
+	var areaHeight = cagesInHeight*cageSize;
+	area.style.paddingTop = (boxHeight - areaHeight)/2 + 'px';
 
 	var numberOfCages = cagesInWidth * cagesInHeight;
 
@@ -25,15 +24,12 @@ var areaCalculates = function () {
 	}
 
 	var cages = area.querySelectorAll('div');
-	var cagesLength = cages.length;
 
-	var xaxis = 1, yaxis = 1;
-
-	for ( i = 0; i < cagesLength; i++ ) {
-		var cage = cages.item(i);
+	for ( var item in cages ) {
+		var cage = cages.item(item);
 		cage.style.width = cageSizepx;
 		cage.style.height = cageSizepx;
-		cage.setAttribute('id', xaxis + '-' + yaxis);
+		cage.setAttribute('id', 'x'+xaxis + 'y' + yaxis);
 		xaxis = xaxis + 1;
 		if (xaxis === cagesInWidth + 1) {
 			yaxis = yaxis + 1;
@@ -41,24 +37,33 @@ var areaCalculates = function () {
 		}
 	}
 
-	var cube = document.getElementById("1-1");
-	cube.className('cube');
 
 	// creating figure class
-	//function Cube(index) {
-	//	this.index = index;
-	//	this.xpos = parseInt(cagesInWidth / 2);
-	//	this.ypos = 1;
-	//	this.initialize = function () {
-	//		area.getElementById("1-1");
-	//		cube.className('cube')
-	//	}
-	//}
-	//
-	//var cube = new Cube;
-	//
-	//cube.initialize();
+	function Figure() {
+		//this.index = index;
+		this.xpos = parseInt(cagesInWidth / 2);
+		this.ypos = 1;
+		this.initializeFigure = function () {
+			var cubes = document.querySelectorAll('.cube');
+			var cubesLength = cubes.length;
+			for ( i = 0; i < cubesLength; i++ ) {
+				cubes.item(i).removeAttribute('class');
+			}
+			document.getElementById('x'+this.xpos+'y'+this.ypos).className = 'cube';
+			document.getElementById('x'+this.xpos+'y'+(this.ypos+1)).className = 'cube';
+		};
+		this.moveDown = function(){
+			this.initializeFigure()
+			if(this.ypos!=cagesInHeight-1){
+				this.ypos = this.ypos + 1;
+				this.moveDown();
+			}
+		}
+	}
+
+	var cube1 = new Figure();
+
+	cube1.moveDown();
 
 }();
-
 
