@@ -1,7 +1,6 @@
 /* options */
-var cageSize = 30;
+var cagesInWidth = 27;
 
-var cageSizepx = cageSize + 'px';
 var box = document.getElementById('box');
 var area = document.getElementById('area');
 
@@ -9,11 +8,13 @@ var area = document.getElementById('area');
 var areaCalculates = function () {
 	var boxWidth = box.offsetWidth;
 	var boxHeight = box.offsetHeight;
-	var cagesInWidth = parseInt(boxWidth / cageSize);
+	var cageSize = parseInt(boxWidth / cagesInWidth);
+	var cageSizepx = cageSize + 'px';
 	var cagesInHeight = parseInt(boxHeight / cageSize);
 	area.style.width = cagesInWidth * cageSize + 'px';
-	var areaHeight = cagesInHeight*cageSize;
-	area.style.paddingTop = (boxHeight - areaHeight)/2 + 'px';
+	var areaHeight = cagesInHeight * cageSize;
+	area.style.paddingTop = (
+	boxHeight - areaHeight) / 2 + 'px';
 
 	var numberOfCages = cagesInWidth * cagesInHeight;
 
@@ -24,12 +25,40 @@ var areaCalculates = function () {
 	}
 
 	var cages = area.querySelectorAll('div');
+	var cagesLength = cages.length;
 
-	for ( var item in cages ) {
-		var cage = cages.item(item);
+	var xaxis = 1, yaxis = 1;
+
+	for ( i = 0; i < cagesLength; i++ ) {
+		var cage = cages.item(i);
 		cage.style.width = cageSizepx;
 		cage.style.height = cageSizepx;
-		cage.className = 'cage';
+		cage.setAttribute('id', xaxis + '-' + yaxis);
+		xaxis = xaxis + 1;
+		if (xaxis === cagesInWidth + 1) {
+			yaxis = yaxis + 1;
+			xaxis = 1;
+		}
 	}
+
+	var cube = document.getElementById("1-1");
+	cube.className('cube');
+
+	// creating figure class
+	//function Cube(index) {
+	//	this.index = index;
+	//	this.xpos = parseInt(cagesInWidth / 2);
+	//	this.ypos = 1;
+	//	this.initialize = function () {
+	//		area.getElementById("1-1");
+	//		cube.className('cube')
+	//	}
+	//}
+	//
+	//var cube = new Cube;
+	//
+	//cube.initialize();
+
 }();
+
 
