@@ -8,29 +8,31 @@ var boxHeight = box.offsetHeight;
 
 var cagesInWidth = parseInt(boxWidth / cageSize);
 if (cagesInWidth % 2 === 0) {
-	cagesInWidth = cagesInWidth - 1;
+	cagesInWidth = cagesInWidth - 1; //always odd
 }
 var cageSizepx = cageSize + 'px';
 var cagesInHeight = parseInt(boxHeight / cageSize);
 area.style.width = cagesInWidth * cageSize + 'px';
 var areaHeight = cagesInHeight * cageSize;
-area.style.paddingTop = (boxHeight - areaHeight) / 2 + 'px';
+area.style.paddingTop = (
+boxHeight - areaHeight) / 2 + 'px';
 
 var numberOfCages = cagesInWidth * cagesInHeight;
 
 console.log(boxWidth + ',' + boxHeight + ',' + numberOfCages);
 
 // Grid creating
-for (var i = 0; i < numberOfCages; i++) {
+for ( var i = 0; i < numberOfCages; i++ ) {
 	area.appendChild(document.createElement("div"));
 }
 
 var cages = area.querySelectorAll('div');
+var cagesLength = cages.length;
 
 var xaxis = 1, yaxis = 1;
 
-for (var item in cages) {
-	var cage = cages.item(item);
+for ( i = 0; i < cagesLength; i++ ) {
+	var cage = cages.item(i);
 	cage.style.width = cageSizepx;
 	cage.style.height = cageSizepx;
 	cage.setAttribute('id', 'x' + xaxis + 'y' + yaxis);
@@ -41,50 +43,69 @@ for (var item in cages) {
 	}
 }
 
-
 // creating figure class
 function Figure() {
-	this.xpos = parseInt(cagesInWidth / 2);
+	this.xpos = parseInt(cagesInWidth / 2) + 1; // always centered
 	this.ypos = 1;
-	this.initializeFigure = function (index) {
-		var cubes = document.querySelectorAll('.cube'+index);
+	this.initializeFigure = function () {
+		var cubes = document.querySelectorAll('.cube.active');
 		var cubesLength = cubes.length;
-		for (i = 0; i < cubesLength; i++) {
+		for ( i = 0; i < cubesLength; i++ ) {
 			cubes.item(i).removeAttribute('class');
 		}
-		document.getElementById('x' + this.xpos + 'y' + this.ypos).className = 'cube'+index;
-		document.getElementById('x' + this.xpos + 'y' + (this.ypos + 1)).className = 'cube'+index;
+		document.getElementById('x' + this.xpos + 'y' + this.ypos).className = 'cube active';
 	};
-	this.fastMoveDown = function (index) {
-		this.initializeFigure(index);
-		if (this.ypos != cagesInHeight - 1) {
-			this.ypos = this.ypos + 1;
-			this.fastMoveDown();
-		}
-	};
-	this.stepDown = function (index) {
-		this.initializeFigure(index);
-		if (this.ypos != cagesInHeight - 1) {
-			this.ypos = this.ypos + 1;
-		}
-	};
-	this.stepLeft = function (index) {
-		this.initializeFigure(index);
+	this.stepLeft = function () {
+
 		if (this.xpos !== 1) {
-			this.xpos = this.xpos - 1;
+			--this.xpos;
+		}this.initializeFigure();
+	};
+	this.stepRight = function () {
+		if (this.xpos !== cagesInWidth) {
+			++this.xpos;
+		}
+		this.initializeFigure();
+	};
+	this.stepDown = function () {
+		var nextCage = document.getElementById('x' + this.xpos + 'y' + (
+		this.ypos + 1));
+		if (this.ypos !== cagesInHeight - 1 || nextCage.className !== "cube") {
+			++this.ypos;
+		} else {
+			document.querySelectorAll('.active').removeClass('active');
+		}
+		this.initializeFigure();
+	};
+	this.fastMoveDown = function () {
+
+		this.initializeFigure();
+
+		if (this.ypos != cagesInHeight) {
+			var nextCage = document.getElementById('x' + this.xpos + 'y' + (
+			this.ypos + 1));
+			if (nextCage && nextCage.className !== "cube") {
+				++this.ypos;
+				this.fastMoveDown();
+			}
 		}
 	};
-	this.stepRight = function (index) {
-		this.initializeFigure(index);
-		if (this.xpos !== cagesInWidth) {
-			this.xpos = this.ypos - 1;
-		}
-	}
 }
+
+//keyboard handling
+window.addEventListener('keydown', function (e) {
+	if (e.keyCode === 32) {//space
+		cube1.rotateFigure();
+	} else if (e.keyCode === 37) {//left
+		cube1.stepLeft();
+	} else if (e.keyCode === 39) {//right
+		cube1.stepRight();
+	} else if (e.keyCode === 40) {//down
+		cube1.fastMoveDown();
+	}
+});
 
 // Creating figures
 var cube1 = new Figure();
-var cube2 = new Figure();
 
-cube1.initializeFigure(1);
-cube2.initializeFigure(2);
+cube1.initializeFigure();
