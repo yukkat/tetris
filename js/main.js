@@ -43,8 +43,10 @@ for ( i = 0; i < cagesLength; i++ ) {
 	}
 }
 
+var forget = false;
+
 // creating figure class
-function Figure() {
+function Figure(index) {
 	this.xpos = parseInt(cagesInWidth / 2) + 1; // always centered
 	this.ypos = 1;
 	this.initializeFigure = function () {
@@ -68,14 +70,21 @@ function Figure() {
 		this.initializeFigure();
 	};
 	this.stepDown = function () {
+		this.initializeFigure();
 		var nextCage = document.getElementById('x' + this.xpos + 'y' + (
 		this.ypos + 1));
-		if (this.ypos !== cagesInHeight - 1 || nextCage.className !== "cube") {
+		if (this.ypos !== cagesInHeight - 1 || nextCage&&nextCage.className !== "cube") {
 			++this.ypos;
 		} else {
-			document.querySelectorAll('.active').removeClass('active');
+			var cubes = document.querySelectorAll('.cube.active');
+			var cubesLength = cubes.length;
+			for ( i = 0; i < cubesLength; i++ ) {
+				cubes.item(i).removeAttribute('class');
+			}
+			document.getElementById('x' + this.xpos + 'y' + this.ypos).className = 'cube';
+			return forget = true;
 		}
-		this.initializeFigure();
+
 	};
 	this.fastMoveDown = function () {
 
@@ -87,25 +96,37 @@ function Figure() {
 			if (nextCage && nextCage.className !== "cube") {
 				++this.ypos;
 				this.fastMoveDown();
+
 			}
-		}
+		}return forget = true;
 	};
 }
 
 //keyboard handling
 window.addEventListener('keydown', function (e) {
 	if (e.keyCode === 32) {//space
-		cube1.rotateFigure();
+		cube.stepDown();
 	} else if (e.keyCode === 37) {//left
-		cube1.stepLeft();
+		cube.stepLeft();
 	} else if (e.keyCode === 39) {//right
-		cube1.stepRight();
+		cube.stepRight();
 	} else if (e.keyCode === 40) {//down
-		cube1.fastMoveDown();
+		cube.fastMoveDown();
 	}
 });
 
+var index;
 // Creating figures
-var cube1 = new Figure();
+var cube = new Figure(index);
 
-cube1.initializeFigure();
+cube.initializeFigure();
+
+setInterval(function(){
+	if (forget){
+		++index;
+		cube = new Figure(index);
+		cube.xpos = parseInt(cagesInWidth / 2) + 1; // always centered
+		cube.ypos = 1;
+		cube.initializeFigure();
+	}
+},100);
