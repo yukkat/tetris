@@ -23,7 +23,7 @@ html,body{
 	border: 2px solid #90b5ff;
 }
 
-.area div[class^="cube"] {
+.area div.cube {
 	 background: #3dbd05;
 	 border: 2px solid #fff;
 	border-radius: 6px;

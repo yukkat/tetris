@@ -1,5 +1,7 @@
+'use strict';
+
 // Options
-var cageSize = 45;
+var cageSize = 100;
 
 // nodes
 var box = document.body;
@@ -39,7 +41,6 @@ for (i = 0; i < cagesLength; i++) {
 	cage.style.width = cageSize + 'px';
 	cage.style.height = cageSize + 'px';
 	cage.setAttribute('id', 'x' + xaxis + 'y' + yaxis);
-	cage.setAttribute('y', yaxis);
 	xaxis = xaxis + 1;
 	if (xaxis === cagesInWidth + 1) {
 		yaxis = yaxis + 1;
@@ -47,13 +48,39 @@ for (i = 0; i < cagesLength; i++) {
 	}
 }
 
-var forget = false;
-var fastMoveInterval;
+var fastMoveInterval, figure;
+
+function reload() {
+	var reload = confirm('Игра закончена! Хотите перезапустить?');
+	if (reload) {
+		location.reload()
+	} else {
+		clearInterval(movingInterval)
+	}
+}
+
+function createFigure() {
+	var cubes = document.querySelectorAll('[active]');
+	var cubesLength = cubes.length;
+	for (i = 0; i < cubesLength; i++) {
+		var item = cubes.item(i);
+		if (item.hasAttributes('marked')) {
+			reload();
+		} else {
+			cubes.item(i).setAttribute('marked', '');
+			cubes.item(i).removeAttribute('active', '');
+		}
+	}
+
+	clearInterval(fastMoveInterval);
+	figure = new Cube();
+	figure.initializeFigure();
+}
 
 // creating figure class
 function Figure() {
-	this.xpos = parseInt(cagesInWidth / 2) + 1; // always centered
-	this.ypos = 1;
+	this.startx = parseInt(cagesInWidth / 2) + 1;// always centered
+	this.starty = 1;
 	this.initializeFigure = function () {
 		var cubes = document.querySelectorAll('[active]');
 		var cubesLength = cubes.length;
@@ -61,99 +88,94 @@ function Figure() {
 			cubes.item(i).removeAttribute('class');
 			cubes.item(i).removeAttribute('active');
 		}
-		document.getElementById('x' + this.xpos + 'y' + this.ypos).className = 'cube';
-		document.getElementById('x' + this.xpos + 'y' + this.ypos).setAttribute('active', '');
+		for (i = 0; i < 4; i++) {
+			var cage = document.getElementById('x' + this.coords[i].x + 'y' + this.coords[i].y);
+			cage.className = this.name;
+			cage.setAttribute('active', '');
+		}
 	};
 	this.stepLeft = function () {
-
-		if (this.xpos !== 1) {
-			--this.xpos;
+		for (i = 0; i < 4; i++) {
+			if (this.coords[i].x !== 1) {
+				--this.coords[i].x;
+			}
 		}
 		this.initializeFigure();
 	};
 	this.stepRight = function () {
-		if (this.xpos !== cagesInWidth) {
-			++this.xpos;
+		for (i = 0; i < 4; i++) {
+			if (this.coords[i].x !== cagesInWidth) {
+				++this.coords[i].x;
+			}
 		}
 		this.initializeFigure();
 	};
 	this.stepDown = function () {
-		this.initializeFigure();
-		var nextCage = document.getElementById('x' + this.xpos + 'y' + (
-		this.ypos + 1));
+		var canMove = this.coords.every(function (el) {
+			var nextCage = document.getElementById('x' + el.x + 'y' + (el.y + 1));
+			return (nextCage && !nextCage.hasAttribute('marked'));
+		});
 
-		if (nextCage && nextCage.className !== "cube") {
-			++this.ypos;
-		} else if (this.ypos === 1) {
-			var reload = confirm('Игра закончена! Хотите перезапустить?');
-			if (reload) {
-				location.reload()
-			} else {
-				clearInterval(movingInterval, newObjectInterval)
-			}
+		console.log(canMove)
+
+		if (canMove) {
+			this.coords.forEach(function (el) {
+					++el.y
+				}
+			);
+			this.initializeFigure();
 		} else {
-			var cubes = document.querySelectorAll('[active]');
-			var cubesLength = cubes.length;
-			for (i = 0; i < cubesLength; i++) {
-				cubes.item(i).removeAttribute('active');
-			}
-			document.getElementById('x' + this.xpos + 'y' + this.ypos).className = 'cube';
-
-			return forget = true;
+			createFigure()
 		}
 
 	};
 	this.fastMoveDown = function () {
 		clearInterval(fastMoveInterval);
 		fastMoveInterval = setInterval(function () {
-			cube.stepDown();
+			figure.stepDown();
 		}, 50);
 
 	};
 }
 
+function Cube() {
+	this.name = 'cube';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx + 1,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx + 1,
+			y: this.starty + 1
+		}
+	];
+
+}
+Cube.prototype = new Figure();
+
 //keyboard handling
 window.addEventListener('keydown', function (e) {
 	if (e.keyCode === 32) {//space
-		cube.fastMoveDown();
+		figure.fastMoveDown();
 	} else if (e.keyCode === 37) {//left
-		cube.stepLeft();
+		figure.stepLeft();
 	} else if (e.keyCode === 39) {//right
-		cube.stepRight();
+		figure.stepRight();
 	} else if (e.keyCode === 40) {//down
-		cube.fastMoveDown();
+		figure.stepDown();
 	}
 });
 
-var cube = new Figure();
-cube.initializeFigure();
+createFigure();
 
 var movingInterval = setInterval(function () {
-	cube.stepDown();
+	figure.stepDown();
 }, 1000);
 
-var lastLine = document.querySelectorAll('[y="' + cagesInHeight + '"]');
-
-var newObjectInterval = setInterval(function () {
-	if (forget) {
-		clearInterval(fastMoveInterval);
-		cube = new Figure();
-		cube.initializeFigure();
-		var fullness = 0;
-		for (i = 0; i < lastLine.length; i++) {
-			if (lastLine.item(i).className === "cube") {
-				fullness++;
-			}
-		}
-		if (fullness === cagesInWidth) {
-			setTimeout(function () {
-				for (i = 0; i < lastLine.length; i++) {
-					lastLine.item(i).removeAttribute('class');
-				}
-			}, 500)
-		}
-
-		return forget = false;
-	}
-}, 100);
 
