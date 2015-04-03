@@ -60,32 +60,6 @@ function reload() {
 }
 
 
-var figureTypes = [Cube, Stick, Stair, Stair2];
-
-function getRandomType(){
-	return parseInt(Math.random() * 4);
-}
-
-
-function createFigure() {
-	var cubes = document.querySelectorAll('[active]');
-	var cubesLength = cubes.length;
-	for (i = 0; i < cubesLength; i++) {
-		var item = cubes.item(i);
-		if (item.hasAttributes('marked')) {
-			reload();
-		} else {
-			cubes.item(i).setAttribute('marked', '');
-			cubes.item(i).removeAttribute('active', '');
-		}
-	}
-
-	clearInterval(fastMoveInterval);
-	figure = new figureTypes[getRandomType()];
-
-	figure.initializeFigure();
-}
-
 // creating figure class
 function Figure() {
 	this.startx = parseInt(cagesInWidth / 2) + 1;// always centered
@@ -147,6 +121,7 @@ function Figure() {
 	};
 }
 
+// creating different figure classes
 function Cube() {
 	this.name = 'cube';
 	this.coords = [
@@ -230,6 +205,31 @@ function Stair2() {
 
 }
 Stair2.prototype = new Figure();
+
+var figureTypes = [Cube, Stick, Stair, Stair2];
+
+function getRandomType(){
+	return parseInt(Math.random() * 4);
+}
+
+function createFigure() {
+	var cubes = document.querySelectorAll('[active]');
+	var cubesLength = cubes.length;
+	for (i = 0; i < cubesLength; i++) {
+		var item = cubes.item(i);
+		if (item.hasAttributes('marked')) {
+			reload();
+		} else {
+			cubes.item(i).setAttribute('marked', '');
+			cubes.item(i).removeAttribute('active', '');
+		}
+	}
+
+	clearInterval(fastMoveInterval);
+	figure = new figureTypes[getRandomType()];
+
+	figure.initializeFigure();
+}
 
 //keyboard handling
 window.addEventListener('keydown', function (e) {
