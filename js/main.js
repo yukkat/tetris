@@ -26,18 +26,13 @@ var numberOfCages = cagesInWidth * cagesInHeight;
 
 console.log(boxWidth + ',' + boxHeight + ',' + numberOfCages);
 
+
 // Grid creating
-for (var i = 0; i < numberOfCages; i++) {
-	area.appendChild(document.createElement("div"));
-}
-
-var cages = area.querySelectorAll('div');
-var cagesLength = cages.length;
-
 var xaxis = 1, yaxis = 1;
 
-for (i = 0; i < cagesLength; i++) {
-	var cage = cages.item(i);
+for (var i = 0; i < numberOfCages; i++) {
+	var cage = document.createElement("div");
+	area.appendChild(cage);
 	cage.style.width = cageSize + 'px';
 	cage.style.height = cageSize + 'px';
 	cage.setAttribute('id', 'x' + xaxis + 'y' + yaxis);
@@ -45,17 +40,6 @@ for (i = 0; i < cagesLength; i++) {
 	if (xaxis === cagesInWidth + 1) {
 		yaxis = yaxis + 1;
 		xaxis = 1;
-	}
-}
-
-var fastMoveInterval, figure;
-
-function reload() {
-	var reload = confirm('Игра закончена! Хотите перезапустить?');
-	if (reload) {
-		location.reload()
-	} else {
-		clearInterval(movingInterval)
 	}
 }
 
@@ -206,6 +190,18 @@ function Stair2() {
 }
 Stair2.prototype = new Figure();
 
+// game utils
+var fastMoveInterval, figure;
+
+function reload() {
+	var reload = confirm('Игра закончена! Хотите перезапустить?');
+	if (reload) {
+		location.reload()
+	} else {
+		clearInterval(movingInterval)
+	}
+}
+
 var figureTypes = [Cube, Stick, Stair, Stair2];
 
 function getRandomType(){
@@ -244,6 +240,8 @@ window.addEventListener('keydown', function (e) {
 	}
 });
 
+
+//start game
 createFigure();
 
 var movingInterval = setInterval(function () {
