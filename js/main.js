@@ -1,7 +1,7 @@
 'use strict';
 
 // Options
-var cageSize = 100;
+var cageSize = 50;
 
 // nodes
 var box = document.body;
@@ -59,6 +59,14 @@ function reload() {
 	}
 }
 
+
+var figureTypes = [Cube, Stick, Stair, Stair2];
+
+function getRandomType(){
+	return parseInt(Math.random() * 4);
+}
+
+
 function createFigure() {
 	var cubes = document.querySelectorAll('[active]');
 	var cubesLength = cubes.length;
@@ -73,7 +81,8 @@ function createFigure() {
 	}
 
 	clearInterval(fastMoveInterval);
-	figure = new Cube();
+	figure = new figureTypes[getRandomType()];
+
 	figure.initializeFigure();
 }
 
@@ -158,6 +167,69 @@ function Cube() {
 
 }
 Cube.prototype = new Figure();
+
+function Stair() {
+	this.name = 'stair';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx - 1,
+			y: this.starty + 1
+		}, {
+			x: this.startx - 1,
+			y: this.starty + 2
+		}
+	];
+
+}
+Stair.prototype = new Figure();
+
+function Stick() {
+	this.name = 'stick';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx,
+			y: this.starty + 2
+		}, {
+			x: this.startx,
+			y: this.starty + 3
+		}
+	];
+
+}
+Stick.prototype = new Figure();
+
+function Stair2() {
+	this.name = 'stair2';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx + 1,
+			y: this.starty + 1
+		}, {
+			x: this.startx + 1,
+			y: this.starty + 2
+		}
+	];
+
+}
+Stair2.prototype = new Figure();
 
 //keyboard handling
 window.addEventListener('keydown', function (e) {

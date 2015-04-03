@@ -1,11 +1,13 @@
-html,body,div{
+html, body, div {
 	bottom: 0;
 	padding: 0;
 	margin: 0;
 }
-html,body{
-    height: 100%;
+
+html, body {
+	height: 100%;
 }
+
 .area {
 	width: auto;
 	margin: auto;
@@ -18,16 +20,34 @@ html,body{
 	border: 2px solid #9ee3ff;
 }
 
-.area div:nth-child(2n){
+.area div:nth-child(2n) {
 	background: #90b5ff;
 	border: 2px solid #90b5ff;
 }
 
 .area div.cube {
-	 background: #3dbd05;
-	 border: 2px solid #fff;
+	background: #3dbd05;
+	border: 2px solid #fff;
 	border-radius: 6px;
- }
+}
+
+.area div.stair {
+	background: #f6740f;
+	border: 2px solid #fff;
+	border-radius: 6px;
+}
+
+.area div.stair2 {
+	background: #e60943;
+	border: 2px solid #fff;
+	border-radius: 6px;
+}
+
+.area div.stick {
+	background: #ead40f;
+	border: 2px solid #fff;
+	border-radius: 6px;
+}
 
 
 
