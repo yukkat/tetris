@@ -26,7 +26,6 @@ var numberOfCages = cagesInWidth * cagesInHeight;
 
 console.log(boxWidth + ',' + boxHeight + ',' + numberOfCages);
 
-
 // Grid creating
 var xaxis = 1, yaxis = 1;
 
@@ -42,7 +41,6 @@ for (var i = 0; i < numberOfCages; i++) {
 		xaxis = 1;
 	}
 }
-
 
 // creating figure class
 function Figure() {
@@ -83,8 +81,6 @@ function Figure() {
 			return (nextCage && !nextCage.hasAttribute('marked'));
 		});
 
-		console.log(canMove)
-
 		if (canMove) {
 			this.coords.forEach(function (el) {
 					++el.y
@@ -103,6 +99,16 @@ function Figure() {
 		}, 50);
 
 	};
+	this.rotate = function () {
+		var rotatePointa = this.coords[2].x;
+		var rotatePointb = this.coords[2].y;
+		this.coords.forEach(function (el) {
+			var a = rotatePointa - el.x, b = rotatePointb - el.y;
+			el.x = rotatePointa - b;
+			el.y = rotatePointb + a;
+		});
+		this.initializeFigure();
+	}
 }
 
 // creating different figure classes
@@ -204,7 +210,7 @@ function reload() {
 
 var figureTypes = [Cube, Stick, Stair, Stair2];
 
-function getRandomType(){
+function getRandomType() {
 	return parseInt(Math.random() * 4);
 }
 
@@ -230,16 +236,15 @@ function createFigure() {
 //keyboard handling
 window.addEventListener('keydown', function (e) {
 	if (e.keyCode === 32) {//space
-		figure.fastMoveDown();
+		figure.rotate();
 	} else if (e.keyCode === 37) {//left
 		figure.stepLeft();
 	} else if (e.keyCode === 39) {//right
 		figure.stepRight();
 	} else if (e.keyCode === 40) {//down
-		figure.stepDown();
+		figure.fastMoveDown();
 	}
 });
-
 
 //start game
 createFigure();
