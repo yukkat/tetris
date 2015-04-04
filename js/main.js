@@ -60,35 +60,59 @@ function Figure() {
 		}
 	};
 	this.stepLeft = function () {
-		for (i = 0; i < 4; i++) {
-			if (this.coords[i].x !== 1) {
-				--this.coords[i].x;
-			}
-		}
-		this.initializeFigure();
-	};
-	this.stepRight = function () {
-		for (i = 0; i < 4; i++) {
-			if (this.coords[i].x !== cagesInWidth) {
-				++this.coords[i].x;
-			}
-		}
-		this.initializeFigure();
-	};
-	this.stepDown = function () {
 		var canMove = this.coords.every(function (el) {
-			var nextCage = document.getElementById('x' + el.x + 'y' + (el.y + 1));
-			return (nextCage && !nextCage.hasAttribute('marked'));
+			var nextCage = document.getElementById('x' + (el.x - 1) + 'y' + el.y);
+			if (nextCage && nextCage.hasAttribute('marked')) {
+				game.createFigure();
+			}
+			return nextCage;
 		});
 
 		if (canMove) {
+			this.coords.forEach(function (el) {
+					--el.x
+				}
+			);
+			this.initializeFigure();
+		}
+	};
+	this.stepRight = function () {
+		var canMove = this.coords.every(function (el) {
+			var nextCage = document.getElementById('x' + (el.x + 1) + 'y' + el.y);
+			if (nextCage && nextCage.hasAttribute('marked')) {
+				game.createFigure();
+			}
+			return nextCage;
+		});
+
+		if (canMove) {
+			this.coords.forEach(function (el) {
+					++el.x
+				}
+			);
+			this.initializeFigure();
+		}
+	};
+	this.stepDown = function () {
+		var nextCagesExist = this.coords.every(function (el) {
+			var nextCage = document.getElementById('x' + el.x + 'y' + (el.y + 1));
+			return nextCage && !nextCage.hasAttribute('marked');
+		});
+
+		if (nextCagesExist) {
 			this.coords.forEach(function (el) {
 					++el.y
 				}
 			);
 			this.initializeFigure();
 		} else {
-			createFigure()
+			var endIsReached = this.coords.every(function (el) {
+				var nextCage = document.getElementById('x' + el.x + 'y' + (el.y + 1));
+				return el.y <= cagesInHeight || !nextCage.hasAttribute('marked')
+			});
+			if (endIsReached) {
+				game.createFigure();
+			}
 		}
 
 	};
@@ -196,42 +220,62 @@ function Stair2() {
 }
 Stair2.prototype = new Figure();
 
+function Pyramid(){
+	this.name = 'pyramid';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx + 1,
+			y: this.starty + 1
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx - 1,
+			y: this.starty + 1
+		}
+	];
+
+}
+Pyramid.prototype = new Figure();
+
 // game utils
 var fastMoveInterval, figure;
 
-function reload() {
-	var reload = confirm('Игра закончена! Хотите перезапустить?');
-	if (reload) {
-		location.reload()
-	} else {
-		clearInterval(movingInterval)
-	}
-}
-
-var figureTypes = [Cube, Stick, Stair, Stair2];
-
-function getRandomType() {
-	return parseInt(Math.random() * 4);
-}
-
-function createFigure() {
-	var cubes = document.querySelectorAll('[active]');
-	var cubesLength = cubes.length;
-	for (i = 0; i < cubesLength; i++) {
-		var item = cubes.item(i);
-		if (item.hasAttributes('marked')) {
-			reload();
+var game = {
+	reload: function () {
+		var reload = confirm('Игра закончена! Хотите перезапустить?');
+		if (reload) {
+			location.reload()
 		} else {
-			cubes.item(i).setAttribute('marked', '');
-			cubes.item(i).removeAttribute('active', '');
+			clearInterval(movingInterval)
 		}
+	},
+	figureTypes: [Cube, Stick, Stair, Stair2, Pyramid],
+	getRandomType: function () {
+		return parseInt(Math.random() * 5);
+	},
+	createFigure: function () {
+		var cubes = document.querySelectorAll('[active]');
+		var cubesLength = cubes.length;
+		for (i = 0; i < cubesLength; i++) {
+			var item = cubes.item(i);
+			if (item.hasAttribute('marked')) {
+				game.reload();
+			} else {
+				item.removeAttribute('active', '');
+				item.setAttribute('marked', '');
+			}
+		}
+
+		clearInterval(fastMoveInterval);
+		figure = new game.figureTypes[game.getRandomType()];
+
+		figure.initializeFigure();
 	}
-
-	clearInterval(fastMoveInterval);
-	figure = new figureTypes[getRandomType()];
-
-	figure.initializeFigure();
-}
+};
 
 //keyboard handling
 window.addEventListener('keydown', function (e) {
@@ -247,7 +291,7 @@ window.addEventListener('keydown', function (e) {
 });
 
 //start game
-createFigure();
+game.createFigure();
 
 var movingInterval = setInterval(function () {
 	figure.stepDown();
