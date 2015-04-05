@@ -111,6 +111,7 @@ function Figure() {
 				return el.y <= cagesInHeight || !nextCage.hasAttribute('marked')
 			});
 			if (endIsReached) {
+				game.lineDestroy();
 				game.createFigure();
 			}
 		}
@@ -220,7 +221,7 @@ function Stair2() {
 }
 Stair2.prototype = new Figure();
 
-function Pyramid(){
+function Pyramid() {
 	this.name = 'pyramid';
 	this.coords = [
 		{
@@ -245,6 +246,7 @@ Pyramid.prototype = new Figure();
 var fastMoveInterval, figure;
 
 var game = {
+	figureTypes: [Cube, Stick, Stair, Stair2, Pyramid],
 	reload: function () {
 		var reload = confirm('Игра закончена! Хотите перезапустить?');
 		if (reload) {
@@ -253,7 +255,6 @@ var game = {
 			clearInterval(movingInterval)
 		}
 	},
-	figureTypes: [Cube, Stick, Stair, Stair2, Pyramid],
 	getRandomType: function () {
 		return parseInt(Math.random() * 5);
 	},
@@ -274,6 +275,41 @@ var game = {
 		figure = new game.figureTypes[game.getRandomType()];
 
 		figure.initializeFigure();
+	},
+	cagesRecount: function () {
+		var cages = area.querySelectorAll('div');
+		var xaxis = 1, yaxis = 1;
+		for (var i = 0; i < numberOfCages; i++) {
+			var cage = cages.item(i);
+			cage.setAttribute('id', 'x' + xaxis + 'y' + yaxis);
+			xaxis = xaxis + 1;
+			if (xaxis === cagesInWidth + 1) {
+				yaxis = yaxis + 1;
+				xaxis = 1;
+			}
+		}
+	},
+	lineDestroy: function () {
+		for (var y = cagesInHeight; y >= 1; y--) {
+			var cagesInLine = [];
+			for (var x = 1; x <= cagesInWidth; x++) {
+				cagesInLine.push(document.getElementById('x' + x + 'y' + y));
+			}
+			var fullness = cagesInLine.every(function (cage) {
+				return cage.hasAttribute('marked')
+			});
+			if (fullness) {
+				cagesInLine.forEach(function (cage) {
+					area.removeChild(cage);
+					var newCage = document.createElement('div');
+					newCage.style.width = cageSize + 'px';
+					newCage.style.height = cageSize + 'px';
+					area.insertBefore(newCage, area.firstChild)
+				});
+				game.cagesRecount();
+			}
+
+		}
 	}
 };
 
@@ -295,6 +331,6 @@ game.createFigure();
 
 var movingInterval = setInterval(function () {
 	figure.stepDown();
-}, 1000);
+}, 750);
 
 
