@@ -112,7 +112,6 @@ function Figure() {
 			});
 			if (endIsReached) {
 				game.lineDestroy();
-				game.createFigure();
 			}
 		}
 
@@ -127,6 +126,10 @@ function Figure() {
 	this.rotate = function () {
 		var rotatePointa = this.coords[2].x;
 		var rotatePointb = this.coords[2].y;
+		var canRotate = this.coords.every(function(){
+
+		});
+
 		this.coords.forEach(function (el) {
 			var a = rotatePointa - el.x, b = rotatePointb - el.y;
 			el.x = rotatePointa - b;
@@ -290,6 +293,7 @@ var game = {
 		}
 	},
 	lineDestroy: function () {
+		game.createFigure();
 		for (var y = cagesInHeight; y >= 1; y--) {
 			var cagesInLine = [];
 			for (var x = 1; x <= cagesInWidth; x++) {
@@ -306,10 +310,11 @@ var game = {
 					newCage.style.height = cageSize + 'px';
 					area.insertBefore(newCage, area.firstChild)
 				});
-				game.cagesRecount();
 			}
 
 		}
+
+		game.cagesRecount();
 	}
 };
 

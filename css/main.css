@@ -47,7 +47,9 @@ html, body {
 	background: #ead40f;
 	border: 2px solid #fff;
 	border-radius: 6px;
-}.area div.pyramid {
+}
+
+.area div.pyramid {
 	background: #9a5aea;
 	border: 2px solid #fff;
 	border-radius: 6px;
