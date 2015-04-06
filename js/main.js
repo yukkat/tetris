@@ -62,10 +62,8 @@ function Figure() {
 	this.stepLeft = function () {
 		var canMove = this.coords.every(function (el) {
 			var nextCage = document.getElementById('x' + (el.x - 1) + 'y' + el.y);
-			if (nextCage && nextCage.hasAttribute('marked')) {
-				game.createFigure();
-			}
-			return nextCage;
+
+			return nextCage && !nextCage.hasAttribute('marked');
 		});
 
 		if (canMove) {
@@ -79,10 +77,7 @@ function Figure() {
 	this.stepRight = function () {
 		var canMove = this.coords.every(function (el) {
 			var nextCage = document.getElementById('x' + (el.x + 1) + 'y' + el.y);
-			if (nextCage && nextCage.hasAttribute('marked')) {
-				game.createFigure();
-			}
-			return nextCage;
+			return nextCage && !nextCage.hasAttribute('marked');
 		});
 
 		if (canMove) {
@@ -94,12 +89,12 @@ function Figure() {
 		}
 	};
 	this.stepDown = function () {
-		var nextCagesExist = this.coords.every(function (el) {
+		var canMove = this.coords.every(function (el) {
 			var nextCage = document.getElementById('x' + el.x + 'y' + (el.y + 1));
 			return nextCage && !nextCage.hasAttribute('marked');
 		});
 
-		if (nextCagesExist) {
+		if (canMove) {
 			this.coords.forEach(function (el) {
 					++el.y
 				}
@@ -126,9 +121,6 @@ function Figure() {
 	this.rotate = function () {
 		var rotatePointa = this.coords[2].x;
 		var rotatePointb = this.coords[2].y;
-		var canRotate = this.coords.every(function(){
-
-		});
 
 		this.coords.forEach(function (el) {
 			var a = rotatePointa - el.x, b = rotatePointb - el.y;
