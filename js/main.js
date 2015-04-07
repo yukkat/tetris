@@ -195,8 +195,8 @@ function Stick() {
 }
 Stick.prototype = new Figure();
 
-function Stair2() {
-	this.name = 'stair2';
+function StairReverse() {
+	this.name = 'stair-reverse';
 	this.coords = [
 		{
 			x: this.startx,
@@ -214,7 +214,7 @@ function Stair2() {
 	];
 
 }
-Stair2.prototype = new Figure();
+StairReverse.prototype = new Figure();
 
 function Pyramid() {
 	this.name = 'pyramid';
@@ -237,11 +237,52 @@ function Pyramid() {
 }
 Pyramid.prototype = new Figure();
 
+function Axe() {
+	this.name = 'axe';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx,
+			y: this.starty + 2
+		}, {
+			x: this.startx + 1,
+			y: this.starty + 2
+		}
+	];
+
+}
+Axe.prototype = new Figure();
+function AxeReverse() {
+	this.name = 'axe-reverse';
+	this.coords = [
+		{
+			x: this.startx,
+			y: this.starty
+		}, {
+			x: this.startx,
+			y: this.starty + 1
+		}, {
+			x: this.startx,
+			y: this.starty + 2
+		}, {
+			x: this.startx - 1,
+			y: this.starty + 2
+		}
+	];
+
+}
+AxeReverse.prototype = new Figure();
+
 // game utils
 var fastMoveInterval, figure;
 
 var game = {
-	figureTypes: [Cube, Stick, Stair, Stair2, Pyramid],
+	figureTypes: [Cube, Stick, Stair, StairReverse, Pyramid, Axe, AxeReverse],
 	reload: function () {
 		var reload = confirm('Игра закончена! Хотите перезапустить?');
 		if (reload) {
@@ -251,7 +292,7 @@ var game = {
 		}
 	},
 	getRandomType: function () {
-		return parseInt(Math.random() * 5);
+		return parseInt(Math.random() * 7);
 	},
 	createFigure: function () {
 		var cubes = document.querySelectorAll('[active]');
@@ -260,6 +301,7 @@ var game = {
 			var item = cubes.item(i);
 			if (item.hasAttribute('marked')) {
 				game.reload();
+				break;
 			} else {
 				item.removeAttribute('active', '');
 				item.setAttribute('marked', '');

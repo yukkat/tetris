@@ -37,7 +37,7 @@ html, body {
 	border-radius: 6px;
 }
 
-.area div.stair2 {
+.area div.stair-reverse {
 	background: #e60943;
 	border: 2px solid #fff;
 	border-radius: 6px;
@@ -51,6 +51,17 @@ html, body {
 
 .area div.pyramid {
 	background: #9a5aea;
+	border: 2px solid #fff;
+	border-radius: 6px;
+}
+
+.area div.axe {
+	background: #4b59ff;
+	border: 2px solid #fff;
+	border-radius: 6px;
+}
+.area div.axe-reverse {
+	background: #c347a4;
 	border: 2px solid #fff;
 	border-radius: 6px;
 }
