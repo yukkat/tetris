@@ -119,13 +119,13 @@ function Figure() {
 
 	};
 	this.rotate = function () {
-		var rotatePointa = this.coords[2].x;
-		var rotatePointb = this.coords[2].y;
+		var rotatePointx = this.coords[2].x;
+		var rotatePointy = this.coords[2].y;
 
 		this.coords.forEach(function (el) {
-			var a = rotatePointa - el.x, b = rotatePointb - el.y;
-			el.x = rotatePointa - b;
-			el.y = rotatePointb + a;
+			var a = rotatePointx - el.x, b = rotatePointy - el.y;
+			el.x = rotatePointx - b;
+			el.y = rotatePointy + a;
 		});
 		this.initializeFigure();
 	}
