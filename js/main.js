@@ -1,3 +1,5 @@
+// Running in the latest browsers
+
 'use strict';
 
 // Options
