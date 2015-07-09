@@ -7,6 +7,4 @@ var cageSize = 50;
 var startSpeed = 1000;
 
 // game utils
-var fastMoveInterval, figure;
-
-
+var fastMoveInterval, movingInterval, figure;
