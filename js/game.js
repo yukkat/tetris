@@ -9,7 +9,7 @@ var game = {
         }
     },
     getRandomType: function () {
-        return parseInt(Math.random() * game.figureTypes.length);
+        return parseInt(Math.random() * 7);
     },
     createFigure: function () {
         var cubes = document.querySelectorAll('[active]');
@@ -92,7 +92,7 @@ game.createFigure();
 var speed = startSpeed;
 
 var acceleration = function(){
-return speed = speed * .999;
+return speed * .999;
 };
 
 var movingInterval = setInterval(function () {
